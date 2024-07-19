@@ -11,7 +11,7 @@ import aiohttp
 from aiohttp import FormData, ClientTimeout
 import asyncio
 from PyPDF2 import PdfReader, PdfWriter
-import io
+import io,shutil
 import requests,base64
 
 
@@ -90,7 +90,18 @@ def split_pdf(file_contents, file_name, pages_per_chunk):
 
     # Create output directory
     output_dir = os.path.join(os.path.dirname(file_name), "chunks")
+    # Check if the directory exists
+    if os.path.isdir(output_dir):
+        # Remove the directory and all its contents
+        shutil.rmtree(output_dir)
+        print(f"Directory {output_dir} has been removed.")
+    else:
+        print(f"Directory {output_dir} does not exist.")
+
+    # Now create the directory again
     os.makedirs(output_dir, exist_ok=True)
+
+    print(f"Directory {output_dir} has been created.")
 
     # Calculate the number of chunks
     num_chunks = (total_pages + pages_per_chunk - 1) // pages_per_chunk
